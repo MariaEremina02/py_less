@@ -81,3 +81,196 @@ if box.can_add(5):
     box.add(5)
 else:
     print("Нельзя добавить 6 монет — копилка переполнится")
+
+#class2
+#1
+from abc import ABC, abstractmethod
+class PaymentMethod(ABC):
+    @abstractmethod
+    def pay(self, amount):
+        pass
+class CashPayment(PaymentMethod):
+    def pay(self, amount):
+        print (f"Оплата наличными суммой: {amount} рублей")
+class CardPayment(PaymentMethod):
+    def pay(self, amount):
+        print (f"Оплата картой суммой: {amount} рублей")
+class ApplePayPayment(PaymentMethod):
+    def pay(self, amount):
+        print (f"Оплата Apple Pay: {amount} рублей")
+def process_payment(payment_method, amount):
+    payment_method.pay(amount)
+payments = [
+    CashPayment(),
+    CardPayment(),
+    ApplePayPayment(),
+]
+for payment in payments:
+    process_payment(payment, 50000)
+
+#2
+from abc import ABC, abstractmethod
+class Notification(ABC):
+    @abstractmethod
+    def send(self, message):
+        pass
+
+class TelegrammNotification(Notification):
+    def __init__(self, video_msg):
+        self.video_msg = video_msg
+    def send(self, message):
+        print (f"Telegramm: someone sent you a video message {self.video_msg}. {message}")
+
+class InstagramNotification(Notification):
+    def __init__(self, reels):
+        self.reels = reels
+    def send(self, message):
+        print (f"Instagram: someone sent you reels {self.reels}. {message}")
+
+class TwitterNotification(Notification):
+    def __init__(self, post):
+        self.post = post
+    def send(self, message):
+        print (f"Twitter: someone sent you a post {self.post}.{message}")
+
+def notify(notification: Notification, message):
+    notification.send(message)
+
+notifications = [
+    TelegrammNotification("send me a video"),
+    InstagramNotification("send me a reels"),
+    TwitterNotification("send me a post")
+]
+for i in notifications:
+    notify(i, "U have a new notification ;)")
+
+#3
+class User:
+    def __init__(self, username, role):
+        self.username = username
+        self.role = role
+
+class Policy:
+    rights_of_use = {
+        "admin": ["edit", "delete", "view"],
+        "user": ["view"]
+    }
+def has_rights_of_use(user, action):
+    return action in Policy.rights_of_use.get(user.role, [])
+
+def check_rights_of_use(action):
+    def decorator(func):
+        def wrapper(user, *args, **kwargs):
+            if not Policy.rights_of_use(user, action):
+                raise PermissionError(
+                    f"User '{user.username} don't have rights to use this {action}."
+                )
+            return func(user, *args, **kwargs)
+        return wrapper
+    return decorator
+
+@check_rights_of_use
+def edit_data(user):
+    print(f"Data edit")
+def delete_data(user):
+    print(f"Data delete")
+def view_data(user):
+    print(f"Viewing data")
+
+admin = User("Maria", "admin")
+user = User("Alex", "user")
+
+view_data(admin)
+view_data(user)
+edit_data(admin)
+try:
+    delete_data(admin)
+except PermissionError as error:
+    print (error)
+
+#4
+class BankAccount:
+    def __init__(self, balance: float = 0):
+        self.__balance = balance
+        self.daily_limit = 5000
+        self.withdrawals_today = 0
+        self.max_withdrawals = 3
+
+def deposit(self, amount: float):
+    if amount <= 0:
+        raise ValueError('amount must be positive')
+    self.__balance += amount
+
+def withdraw(self, amount: float):
+    if amount <= 0:
+        raise ValueError('amount must be positive')
+    if amount > self.__balance:
+        raise ValueError('insufficient funds')
+    if amount > self.daily_limit:
+        raise ValueError('the daily limit has been exceeded')
+    if self.withdrawals_today >= self.max_withdrawals:
+        raise ValueError('maximum withdrawals has been reached')
+    self.__balance -= amount
+    self.withdrawals_today += 1
+    print(f"Withdrawn from the account: {amount}")
+
+def get_balance(self):
+    return self.__balance
+
+account = BankAccount(3000)
+
+
+account.deposit(2000)
+account.withdraw(100)
+account.withdraw(100)
+account.withdraw(100)
+print("Current balanc:", account.view_balance())
+
+#iterator
+#1
+class RangeIterator:
+    def __init__(self, start, stop, step=1):
+        self.start = start
+        self.stop = stop
+        self.step = step
+        self.current = start
+
+def __iter__(self):
+    return self
+
+def __next__(self):
+    if self.current > 0:
+        if self.current >= self.stop:
+            raise StopIteration
+    else:
+        if self.current <= self.stop:
+            raise StopIteration
+
+    value = self.current
+    self.current += self.step
+    return value
+
+start = RangeIterator(3, 9, 2)
+print(list(start))
+print(list(start))
+print(list(start))
+
+#2
+def fibonacci(limit):
+    a, b = 0, 1
+    while a <= limit:
+        yield a
+        a, b = b, a + b
+for n in fibonacci(100):
+    print(n)
+
+#4
+def flatten(iterable):
+    for item in iterable:
+        if isinstance (item, list):
+            yield from flatten(item)
+        else:
+            yield item
+data = [1, [2, 3], [[4], 5], 6]
+flat_list = list(flatten(data))
+print(" → ".join(map(str, flat_list)))

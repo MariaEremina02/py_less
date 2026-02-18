@@ -274,3 +274,79 @@ def flatten(iterable):
 data = [1, [2, 3], [[4], 5], 6]
 flat_list = list(flatten(data))
 print(" → ".join(map(str, flat_list)))
+
+#file
+1
+file = open ("file.txt","r", encoding="utf-8")
+for i in range(6):
+    line = input("введите строку:")
+    file.write(line + "\n")
+file.close()
+
+2
+file = open ("file.txt","a", encoding="utf-8")
+for i in range(3):
+    line = input("введите строку")
+    file.write(line + "\n")
+file.close()
+
+3
+file = open ("file.txt","r", encoding="utf-8")
+text = file.read()
+file.close()
+count = 0
+for symbol in text:
+    if symbol != "\n":
+        count += 1
+print ("Кол-во символов:", count)
+
+4
+file = open ("file.txt","r", encoding="utf-8")
+lines = file.readlines()
+file.close()
+list = []
+for line in lines:
+    list.append(line.strip())
+print(list)
+
+5
+file = open ("!.txt","r", encoding="utf-8")
+lines = file.readlines()
+file.close()
+for line in lines:
+    line = line.strip()
+    if line.endswith("!"):
+        print(line)
+
+#6
+import json
+flights = [
+    {"flight_number": "SU123",
+    "destination": "Москва",
+    "departure_time": "08:30"
+  },
+  {
+    "flight_number": "FR456",
+    "destination": "Варшава",
+    "departure_time": "12:15"
+  },
+  {
+    "flight_number": "BT789",
+    "destination": "Москва",
+    "departure_time": "18:40"
+}
+]
+
+file = open ("flights.json","w", encoding="utf-8")
+json.dump(flights, file, ensure_ascii=False, indent=4)
+file.close()
+
+file = open("flights.json", "r", encoding="utf-8")
+flights = json.load(file)
+file.close()
+
+city = input("Введите пункт назначения: ")
+
+for flight in flights:
+    if flight["destination"] == city:
+        print(flight["flight_number"], flight["departure_time"])
